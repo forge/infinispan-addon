@@ -1,0 +1,63 @@
+== Infinispan
+:idprefix: id_ 
+
+This addon provides *standalone* functionality. 
+
+=== Depends on
+
+[options="header"]
+|===
+|Addon |Exported |Optional
+
+|javaee-spi
+|yes
+|no
+
+|org.jboss.forge.furnace.container:cdi
+|no
+|no
+
+|===
+
+== Setup
+
+This addon requires the following installation steps.
+
+=== Add configuration to pom.xml 
+
+To use this addon, you must add it as a dependency in the *pom.xml* of your `forge-addon` classified artifact:
+
+[source,xml]
+----
+<dependency>
+   <groupId>org.jboss.forge.addon</groupId>
+   <artifactId>infinispan</artifactId>
+   <classifier>forge-addon</classifier>
+   <version>${version}</version>
+</dependency>
+----
+
+== Features
+
+Injection of CacheManager:: This addon allows you to instantiate Cache objects from the CacheManager. 
+ +
+[source,java]
+----
+@Inject private CacheManager manager;
+...
+Cache<String,String> cache = manager.createCache("default", new MutableConfiguration<String, String>().setStoreByValue(false));
+cache.put("foo","bar");
+Assert.assertEquals("bar",cache.get("foo"));
+----
++
+[TIP] 
+====
+If your addon uses a container that does not support "@Inject" annotations, services such as the `AddonManager` may also be 
+accessed via the `AddonRegistry`:
+
+----
+AddonRegistry registry = ...
+Imported<CacheManager> imported = registry.getServices(CacheManager.class);
+CacheManager manager = imported.get();
+----
+==== 
